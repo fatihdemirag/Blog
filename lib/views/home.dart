@@ -22,100 +22,11 @@ class Home extends StatelessWidget {
           SizedBox(height: 10.0),
           _category(),
           _buildHeading("Son Yazılarım"),
+          Divider(),
           _buildPost(),
           _buildHeading("Projelerim"),
-          Padding(
-            padding:  EdgeInsets.symmetric(horizontal: 4.0),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    margin:  EdgeInsets.symmetric(horizontal: 4.0),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: NetworkImage("https://spexa.net/assets/img/projects/crm.png"), fit: BoxFit.fill),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.green.shade200,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    margin:  EdgeInsets.symmetric(horizontal: 4.0),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: NetworkImage("https://spexa.net/assets/img/projects/gelberber-1.png"), fit: BoxFit.fill),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.green.shade200,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    margin:  EdgeInsets.symmetric(horizontal: 4.0),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: NetworkImage("https://spexa.net/assets/img/projects/turuncumobilya.png"), fit: BoxFit.cover),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.green.shade200,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding:  EdgeInsets.all(4.0),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    margin:  EdgeInsets.symmetric(horizontal: 4.0),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: NetworkImage("https://spexa.net/assets/img/projects/matematikalistirmalar.jpg"), fit: BoxFit.fill),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.green.shade200,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    margin:  EdgeInsets.symmetric(horizontal: 4.0),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: NetworkImage("https://fatihdemirag.net/wp-content/uploads/2020/05/mb-1.png"), fit: BoxFit.fill),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.green.shade200,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    margin:  EdgeInsets.symmetric(horizontal: 4.0),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: NetworkImage("https://fatihdemirag.net/wp-content/uploads/2020/05/IMG_20200501_184735.jpg"), fit: BoxFit.fill),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.green.shade200,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          Divider(),
+          _buildProject(),
         ],
       ),
     );
@@ -145,13 +56,13 @@ class Home extends StatelessWidget {
                           },
                           child:
                           Padding(
-                            padding:  EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                            padding:  EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Container(
-                                  height: 120,
-                                  width: 100,
+                                  height: 130,
+                                  width: 120,
                                   margin: EdgeInsets.only(right: 10.0),
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
@@ -164,7 +75,7 @@ class Home extends StatelessWidget {
                                   child: Column(
                                     children: <Widget>[
                                       Html(data:itemPost.title,defaultTextStyle: TextStyle(fontWeight: FontWeight.bold)),
-                                      Html(data:itemPost.content.length>150?itemPost.content.substring(0,180)+"[...]":itemPost.content,useRichText: true)
+                                      Html(data:itemPost.content.length>180?itemPost.content.substring(0,180)+"[...]":itemPost.content,useRichText: true)
                                     ],
                                   ),
                                 ),
@@ -179,7 +90,76 @@ class Home extends StatelessWidget {
           }
           else if(snapshot.hasError)
             Fluttertoast.showToast(msg: "Hata oluştu: ${snapshot.error}",gravity: ToastGravity.BOTTOM);
-          return CircularProgressIndicator();
+          return Container(
+            alignment: Alignment.topCenter,
+            child: SizedBox(
+                width: 50,
+                height: 50,
+                child:CircularProgressIndicator()
+            ),
+          );
+        }
+    );
+  }
+  Widget _buildProject() {
+    return FutureBuilder<List<Post>>(
+        future: getPostProject(),
+        builder: (context,snapshot)
+        {
+          if(snapshot.hasData)
+          {
+            return
+              ListView.builder(
+                  shrinkWrap: true,
+                  physics: PageScrollPhysics(),
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) {
+                    Post itemPost = snapshot.data[index];
+                    return InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, "/post-detail",arguments: {"id":itemPost.id,"link":itemPost.link});
+                        },
+                        child:
+                        Padding(
+                          padding:  EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                height: 130,
+                                width: 120,
+                                margin: EdgeInsets.only(right: 10.0),
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: NetworkImage(itemPost.image), fit: BoxFit.cover),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.blueGrey,
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: <Widget>[
+                                    Html(data:itemPost.title,defaultTextStyle: TextStyle(fontWeight: FontWeight.bold)),
+                                    Html(data:itemPost.content.length>180?itemPost.content.substring(0,180)+"[...]":itemPost.content,useRichText: true)
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                  });
+          }
+          else if(snapshot.hasError)
+            Fluttertoast.showToast(msg: "Hata oluştu: ${snapshot.error}",gravity: ToastGravity.BOTTOM);
+          return Container(
+            alignment: Alignment.topCenter,
+            child: SizedBox(
+                width: 50,
+                height: 50,
+                child:CircularProgressIndicator()
+            ),
+          );
         }
     );
   }
@@ -214,12 +194,6 @@ class Home extends StatelessWidget {
               if(snapshot.hasData)
               {
                 return CarouselSlider(
-                  viewportFraction: 1.0,
-                  autoPlay: true,
-                  enlargeCenterPage: true,
-                  initialPage: 0,
-                  reverse: false,
-                  autoPlayCurve: Curves.fastOutSlowIn,
                   items: snapshot.data.map((i) {
                     return Builder(
                       builder: (BuildContext context) {
@@ -259,12 +233,27 @@ class Home extends StatelessWidget {
                       },
                     );
                   }).toList(),
+                  options: CarouselOptions(
+                    viewportFraction: 1.0,
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    initialPage: 0,
+                    reverse: false,
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                  ),
                 );
 
               }
               else if(snapshot.hasError)
                 Fluttertoast.showToast(msg: "Hata oluştu: ${snapshot.error}",gravity: ToastGravity.BOTTOM);
-              return CircularProgressIndicator();
+              return Container(
+                alignment: Alignment.topCenter,
+                child: SizedBox(
+                    width: 50,
+                    height: 50,
+                    child:CircularProgressIndicator()
+                ),
+              );
 
             }
         )
@@ -362,6 +351,23 @@ Future<List<Post>> getPost() async
   HttpClient httpClient = new HttpClient();
   IOClient ioClient = new IOClient(httpClient);
   final response=await ioClient.get(url+"posts?per_page=15");
+  if(response.statusCode==200)
+  {
+    var posts=List<Post>();
+    for(var postJson in json.decode(utf8.decode(response.bodyBytes)))
+    {
+      posts.add(Post.fromJson(postJson));
+    }
+    return posts;
+  }
+  else
+    throw Exception("Veriler getirilirken hata oluştu");
+}
+Future<List<Post>> getPostProject() async
+{
+  HttpClient httpClient = new HttpClient();
+  IOClient ioClient = new IOClient(httpClient);
+  final response=await ioClient.get(url+"posts/?categories=77");
   if(response.statusCode==200)
   {
     var posts=List<Post>();
