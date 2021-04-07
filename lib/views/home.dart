@@ -61,8 +61,8 @@ class Home extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Container(
-                                  height: 130,
-                                  width: 120,
+                                  height: 80,
+                                  width: 80,
                                   margin: EdgeInsets.only(right: 10.0),
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
@@ -75,7 +75,7 @@ class Home extends StatelessWidget {
                                   child: Column(
                                     children: <Widget>[
                                       Html(data:itemPost.title,defaultTextStyle: TextStyle(fontWeight: FontWeight.bold)),
-                                      Html(data:itemPost.content.length>180?itemPost.content.substring(0,180)+"[...]":itemPost.content,useRichText: true)
+                                      Html(data:itemPost.content.length>110?itemPost.content.substring(0,110)+"[...]":itemPost.content,useRichText: true)
                                     ],
                                   ),
                                 ),
@@ -126,8 +126,8 @@ class Home extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Container(
-                                height: 130,
-                                width: 120,
+                                height: 80,
+                                width: 80,
                                 margin: EdgeInsets.only(right: 10.0),
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
@@ -140,7 +140,7 @@ class Home extends StatelessWidget {
                                 child: Column(
                                   children: <Widget>[
                                     Html(data:itemPost.title,defaultTextStyle: TextStyle(fontWeight: FontWeight.bold)),
-                                    Html(data:itemPost.content.length>180?itemPost.content.substring(0,180)+"[...]":itemPost.content,useRichText: true)
+                                    Html(data:itemPost.content.length>110?itemPost.content.substring(0,110)+"[...]":itemPost.content,useRichText: true)
                                   ],
                                 ),
                               ),
@@ -175,7 +175,7 @@ class Home extends StatelessWidget {
               style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade600
+                  color: Colors.black
               ),
             ),
           ),
@@ -186,7 +186,7 @@ class Home extends StatelessWidget {
 
   Padding _buildSlider() {
     return Padding(
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(5),
         child: FutureBuilder<List<Post>>(
             future: getPostSlider(),
             builder: (context,snapshot)
