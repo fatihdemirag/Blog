@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/io_client.dart';
+import 'package:blog/widgets/shimmer_widget.dart';
+import 'package:shimmer/shimmer.dart';
 
 class Home extends StatelessWidget {
 
@@ -16,23 +18,27 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: ListView(
-        children: <Widget>[
-          _buildSlider(),
-          SizedBox(height: 10.0),
-          _category(),
-          _buildHeading("Son Yazılarım"),
-          Divider(),
-          _buildPost(),
-          _buildHeading("Projelerim"),
-          Divider(),
-          _buildProject(),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+            children: <Widget>[
+              _buildSlider(),
+              SizedBox(height: 10.0),
+              _category(),
+              _buildHeading("Son Yazılarım"),
+              Divider(),
+              _buildPost(),
+              _buildHeading("Projelerim"),
+              Divider(),
+              _buildProject(),
+            ]
+        ),
+
       ),
     );
   }
 
   Widget _buildPost() {
+
     return FutureBuilder<List<Post>>(
         future: getPost(),
         builder: (context,snapshot)
@@ -90,14 +96,11 @@ class Home extends StatelessWidget {
           }
           else if(snapshot.hasError)
             Fluttertoast.showToast(msg: "Hata oluştu: ${snapshot.error}",gravity: ToastGravity.BOTTOM);
-          return Container(
-            alignment: Alignment.topCenter,
-            child: SizedBox(
-                width: 50,
-                height: 50,
-                child:CircularProgressIndicator()
-            ),
-          );
+          return
+            Container(
+              alignment: Alignment.topCenter,
+              child: ShimmerWidget(),
+            );
         }
     );
   }
@@ -116,55 +119,48 @@ class Home extends StatelessWidget {
                   itemBuilder: (context, index) {
                     Post itemPost = snapshot.data[index];
                     return InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(context, "/post-detail",arguments: {"id":itemPost.id,"link":itemPost.link});
-                        },
-                        child:
-                        Padding(
-                          padding:  EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                height: 80,
-                                width: 80,
-                                margin: EdgeInsets.only(right: 10.0),
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: NetworkImage(itemPost.image), fit: BoxFit.cover),
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.blueGrey,
-                                ),
+                      onTap: () {
+                        Navigator.pushNamed(context, "/post-detail",arguments: {"id":itemPost.id,"link":itemPost.link});
+                      },
+                      child:
+                      Padding(
+                        padding:  EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              height: 80,
+                              width: 80,
+                              margin: EdgeInsets.only(right: 10.0),
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: NetworkImage(itemPost.image), fit: BoxFit.cover),
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.blueGrey,
                               ),
-                              Expanded(
-                                child: Column(
-                                  children: <Widget>[
-                                    Html(data:itemPost.title,defaultTextStyle: TextStyle(fontWeight: FontWeight.bold)),
-                                    Html(data:itemPost.content.length>110?itemPost.content.substring(0,110)+"[...]":itemPost.content,useRichText: true)
-                                  ],
-                                ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                children: <Widget>[
+                                  Html(data:itemPost.title,defaultTextStyle: TextStyle(fontWeight: FontWeight.bold)),
+                                  Html(data:itemPost.content.length>110?itemPost.content.substring(0,110)+"[...]":itemPost.content,useRichText: true)
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      );
+                      ),
+                    );
                   });
           }
           else if(snapshot.hasError)
             Fluttertoast.showToast(msg: "Hata oluştu: ${snapshot.error}",gravity: ToastGravity.BOTTOM);
-          return Container(
-            alignment: Alignment.topCenter,
-            child: SizedBox(
-                width: 50,
-                height: 50,
-                child:CircularProgressIndicator()
-            ),
-          );
+          return ShimmerWidget();
         }
     );
   }
 
-  Padding _buildHeading(String title) {
+  Widget _buildHeading(String title) {
     return Padding(
       padding: EdgeInsets.only(bottom:15.0,top:15.0,left: 10),
       child: Row(
@@ -184,8 +180,9 @@ class Home extends StatelessWidget {
     );
   }
 
-  Padding _buildSlider() {
-    return Padding(
+  Widget _buildSlider() {
+    return SafeArea(
+        child: Padding(
         padding: EdgeInsets.all(5),
         child: FutureBuilder<List<Post>>(
             future: getPostSlider(),
@@ -246,17 +243,25 @@ class Home extends StatelessWidget {
               }
               else if(snapshot.hasError)
                 Fluttertoast.showToast(msg: "Hata oluştu: ${snapshot.error}",gravity: ToastGravity.BOTTOM);
-              return Container(
-                alignment: Alignment.topCenter,
-                child: SizedBox(
-                    width: 50,
-                    height: 50,
-                    child:CircularProgressIndicator()
+              return SafeArea(
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300],
+                  highlightColor: Colors.grey[100],
+                  enabled: true,
+                  child: Container(
+                    height: 180,
+                    width: 1000,
+                    margin: EdgeInsets.only(right: 10.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.blueGrey,
+                    ),
+                  ),
                 ),
               );
-
             }
         )
+    )
     );
   }
 
@@ -318,10 +323,31 @@ class Home extends StatelessWidget {
                 Fluttertoast.showToast(msg: "Hata oluştu: ${snapshot.error}",gravity: ToastGravity.BOTTOM);
               return Container(
                 alignment: Alignment.topCenter,
-                child: SizedBox(
-                    width: 50,
-                    height: 50,
-                    child:CircularProgressIndicator()
+                child: Shimmer.fromColors(
+                    baseColor: Colors.grey[300],
+                    highlightColor: Colors.grey[100],
+                    enabled: true,
+                    child:
+                    ListView.builder(
+                        itemCount: 10,
+                        shrinkWrap: false,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context,index){
+                          return Column(
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.all(10),
+                                width: 50.0,
+                                height: 50.0,
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFBDCDDE),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              SizedBox(height: 10.0),
+                            ],
+                          );
+                        })
                 ),
               );
             }

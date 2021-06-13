@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:blog/models/post.dart';
+import 'package:blog/widgets/shimmer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -85,14 +86,7 @@ Widget _buildPost(BuildContext context){
                   }
                   else if(snapshot.hasError)
                     Fluttertoast.showToast(msg: "Hata oluştu: ${snapshot.error}",gravity: ToastGravity.BOTTOM);
-                  return Container(
-                    alignment: Alignment.topCenter,
-                    child: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child:CircularProgressIndicator()
-                    ),
-                  );
+                  return ShimmerWidget();
                 }
             ),
           ),
