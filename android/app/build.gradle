@@ -26,14 +26,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    signingConfigs {
-        release {
-            storeFile file('/home/fxd/Belgeler/GooglePlayKeyStore/key.jks')
-            storePassword '32844-fd'
-            keyAlias = 'key0'
-            keyPassword '32844-fd'
-        }
-    }
+   
     compileSdkVersion 29
 
     sourceSets {
